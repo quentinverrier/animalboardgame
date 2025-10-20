@@ -1,7 +1,32 @@
-<p>This is the Home page!</p>
-<p>You are using: {{ platformName }} {{ platformVersion }}!</p>
-<p>Browser URL: {{ browserUrl }}</p>
-@if (platformName === "Electron") {
-  <p>Electron App Path: {{ electronAppExecPath }}</p>
+@for(playerUI of playerUIs; track playerUI.id()){
+  <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
+    Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
+    | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}}
+  </p>
+
 }
-<p>Start building your app here!</p>
+<p>Players:
+  [@for(player of gameStateUI.players(); track player.id){
+    {{player.playerUI.name()}}
+  }]
+   | Threshold: {{gameStateUI.mushroomThreshold()}} | Round: {{gameStateUI.round()}} | Turn: {{gameStateUI.turn()}} | cardValue: {{gameStateUI.cardValue()}} | deadCards: [{{gameStateUI.deadCards()}}]</p>
+
+@for(player of gameStateUI.players(); track player.id){
+    <p>{{player.playerUI.name()}}
+    @if(player.playerUI.canPlay() == true){
+      @for(i of range(0,4); track $index){
+        @if(player.playerUI.handCards()[i] == true){
+          <button (click)="onPlay(i, player)">Jouer {{i+1}}</button>
+        }
+        
+      }
+    }
+    @if(player.playerUI.canKill() == true){
+      @for(i of range(0,4); track $index){
+        @if(gameState.getKillableCards().includes(`${i}`)){
+          <button (click)="onKill(i, player)">Tuer les {{i+1}}</button>
+        }
+      }
+    }
+    Score: {{player.getScore()}} </p>
+  }
