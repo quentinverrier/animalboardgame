@@ -1,6 +1,4 @@
 import { signal, WritableSignal } from "@angular/core";
-import { Player } from "./Player";
-import { GameState } from "./GameState";
 
 export class PlayerUI {
 
@@ -26,26 +24,14 @@ export class PlayerUI {
         this.canKill = signal(false);
     }
 
-    public init(player: Player) {
-
-        this.id.set(player.id);
-        this.name.set(player.name);
-        this.mushrooms.set(player.mushrooms);
-        this.alive.set(player.alive);
-        this.handCards.set(player.handCards);
-        this.boardCards.set(player.boardCards);
-        this.inactiveCards.set(player.inactiveCards);
-        this.canPlay.set(player.canPlay);
-        this.canKill.set(player.canKill);
-        this.Play = player.Play;
-        this.Kill = player.Kill;
+    public getScore() {
+        let score = 0;
+        for (const index in this.inactiveCards) {
+            if (this.inactiveCards()[Number(index)] == true) {
+                score += Number(index) + 1;
+            }
+        }
+        return score;
     }
 
-    public Play(choice: number){
-
-    }
-
-    public Kill(gameState: GameState, choice:number){
-
-    }
 }

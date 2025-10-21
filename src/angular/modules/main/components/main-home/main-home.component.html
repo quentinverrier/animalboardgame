@@ -1,4 +1,4 @@
-@for(playerUI of playerUIs; track playerUI.id()){
+@for(playerUI of gameStateUI.players(); track playerUI.id()){
   <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
     Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
     | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}}
@@ -6,27 +6,30 @@
 
 }
 <p>Players:
-  [@for(player of gameStateUI.players(); track player.id){
-    {{player.playerUI.name()}}
+  [@for(player of gameStateUI.players(); track player.id()){
+    {{player.name()}}
   }]
    | Threshold: {{gameStateUI.mushroomThreshold()}} | Round: {{gameStateUI.round()}} | Turn: {{gameStateUI.turn()}} | cardValue: {{gameStateUI.cardValue()}} | deadCards: [{{gameStateUI.deadCards()}}]</p>
 
-@for(player of gameStateUI.players(); track player.id){
-    <p>{{player.playerUI.name()}}
-    @if(player.playerUI.canPlay() == true){
-      @for(i of range(0,4); track $index){
-        @if(player.playerUI.handCards()[i] == true){
-          <button (click)="onPlay(i, player)">Jouer {{i+1}}</button>
+@for(player of gameStateUI.players(); track player.id()){
+    <p>{{player.name()}}
+      @if(player.id() == sessionID){
+        @if(player.canPlay() == true){
+          @for(i of range(0,4); track $index){
+            @if(player.handCards()[i] == true){
+              <button (click)="onPlay(i, player.id())">Jouer {{i+1}}</button>
+            }
+            
+          }
         }
-        
-      }
-    }
-    @if(player.playerUI.canKill() == true){
-      @for(i of range(0,4); track $index){
-        @if(gameState.getKillableCards().includes(`${i}`)){
-          <button (click)="onKill(i, player)">Tuer les {{i+1}}</button>
+        @if(player.canKill() == true){
+          
+          @for(i of range(0,4); track $index){
+            @if(gameStateUI.getKillableCards().includes(`${i}`)){
+              <button (click)="onKill(i, player.id())">Tuer les {{i+1}}</button>
+            }
+          }
         }
       }
-    }
-    Score: {{player.getScore()}} </p>
+      | Score: {{player.getScore()}} </p>
   }

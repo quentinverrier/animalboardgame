@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { ElectronService, PlatformService } from '../../../common';
-import { GameState } from '../../game/objects/GameState';
-import { Player } from '../../game/objects/Player';
 import { PlayerUI } from '../../game/objects/PlayerUI';
 import { GameStateUI } from '../../game/objects/GameStateUI';
+import { WebSocketService } from '../../services/WebSocketService';
 
 @Component({
   selector: 'main-home',
@@ -12,10 +11,12 @@ import { GameStateUI } from '../../game/objects/GameStateUI';
 })
 export class MainHomeComponent implements OnInit, AfterViewInit {
 
-  public readonly playerUIs: PlayerUI[];
-  public readonly gameStateUI: GameStateUI;
-  public readonly players: Player[];
-  public readonly gameState: GameState;
+  // public playerUIs: PlayerUI[];
+  public gameStateUI: GameStateUI;
+  // public players: Player[];
+  // public gameState: GameState;
+  public webSocketService: WebSocketService;
+  public sessionID: number;
   // public readonly turn: WritableSignal<string>;
   // public readonly round: WritableSignal<string>;
   // public readonly mushrooms: WritableSignal<string>;
@@ -25,68 +26,62 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
 
   ) {
     //adapter au nombre de joueurs dans la partie
-    this.playerUIs = []
-    this.players = []
-    for (let i = 0; i <= 4; i++) this.playerUIs.push(new PlayerUI());
+    // this.playerUIs = []
+    // this.players = []
     this.gameStateUI = new GameStateUI();
-    this.gameState = new GameState(this.gameStateUI,this.players);
+    // this.gameState = new GameState(this.gameStateUI, this.players);
+    this.webSocketService = new WebSocketService();
+    this.sessionID = 999;
   }
   ngAfterViewInit(): void {
-    this.players.push(new Player(this.playerUIs[0], 0, "Tekson"));
-    this.players.push(new Player(this.playerUIs[1], 1, "iSwitch"));
-    this.players.push(new Player(this.playerUIs[2], 2, "Kigasha"));
-    this.players.push(new Player(this.playerUIs[3], 3, "Shockoulis"));
-    this.players.push(new Player(this.playerUIs[4], 4, "Fenouil"));
-    this.gameState.startGame();
-  
+    // this.players.push(new Player(this.playerUIs[0], 0, "Tekson"));
+    // this.players.push(new Player(this.playerUIs[1], 1, "iSwitch"));
+    // this.players.push(new Player(this.playerUIs[2], 2, "Kigasha"));
+    // this.players.push(new Player(this.playerUIs[3], 3, "Shockoulis"));
+    // this.players.push(new Player(this.playerUIs[4], 4, "Fenouil"));
+    // this.gameState.startGame();
+    this.webSocketService.connect("ws://localhost:8080");
+    this.webSocketService.connectionEstablished$.subscribe(() => { 
+      console.log("Connected to server");
+      this.gatherGameState();
+    });
+    this.webSocketService.messageReceived$.subscribe((message: string) => { this.readServerMessage(message) });
   }
   ngOnInit(): void {
-    
+
   }
 
-  public onPlay(choice: number, player: Player){
-    if (player.canPlay == true && player.alive == true && this.gameState.leftToPlay > 0){
-      player.Play(choice);
-      player.canPlay = false;
+  public readServerMessage(message: string) {
+    try{
+      let messageParsed = JSON.parse(message.toString());
+      if(messageParsed.type == "sendGameState"){
+        console.log(messageParsed);
+        this.gameStateUI.update(messageParsed.data);
+        console.log(`I am playing ${this.gameStateUI.players()[this.sessionID].name()}`)
+      }
+      if(messageParsed.type == "sendID"){
+        this.sessionID = messageParsed.data;
+      }
     }
-    else if (player.alive == false){
-      console.error("Player is dead");
-    }
-    else if (player.canPlay == false){
-      console.error("Player can't play");
-    }
-    else if (this.gameState.leftToPlay == 0){
-      console.error("No player left to play");
-    }
-    this.gameState.leftToPlay--;
-    if (this.gameState.leftToPlay == 0){
-      this.gameState.playStep();
+    catch{
+      this.webSocketService.send("vraiment nul à chier ton message");
     }
   }
-
-  public onKill(choice: number, player: Player){
-    if (player.canKill == true && player.alive == true && this.gameState.leftToPlay > 0){
-      player.Kill(this.gameState,choice);
-      player.canKill = false;
-    }
-    else if (player.alive == false){
-      console.error("Player is dead");
-    }
-    else if (player.canPlay == false){
-      console.error("Player can't play");
-    }
-    else if (this.gameState.leftToPlay == 0){
-      console.error("No player left to play");
-    }
-    this.gameState.leftToPlay--;
-    if (this.gameState.leftToPlay == 0){
-      this.gameState.playStep();
-    }
+  public gatherGameState() {
+    this.webSocketService.send(JSON.stringify({ type: "gatherGameState" }));
   }
 
-  public range(start: number, stop: number){
+  public onPlay(choice: number, playerID: number) {
+    this.webSocketService.send(JSON.stringify({ type: "onPlay" , data: {choice,playerID} }));
+  }
+
+  public onKill(choice: number, playerID: number) {
+    this.webSocketService.send(JSON.stringify({ type: "onKill" , data: {choice,playerID} }));
+  }
+
+  public range(start: number, stop: number) {
     let range = [];
-    for (let i = start; i <= stop; i++){
+    for (let i = start; i <= stop; i++) {
       range.push(i);
     }
     return range;
