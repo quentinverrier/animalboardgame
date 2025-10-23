@@ -15,7 +15,7 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
 
   public gameStateUI: GameStateUI;
   public webSocketService: WebSocketService;
-  public sessionID: number;
+  public sessionID: string;
   public profileForm: FormGroup
   public temp: string;
 
@@ -24,7 +24,7 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
   ) {
     this.gameStateUI = new GameStateUI();
     this.webSocketService = new WebSocketService();
-    this.sessionID = 999;
+    this.sessionID = "";
     this.profileForm = new FormGroup({
       name: new FormControl(''),
     });
@@ -54,11 +54,13 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
       if(messageParsed.type == "sendGameState"){
         console.log(messageParsed);
         this.gameStateUI.update(messageParsed.data);
-        console.log(`I am playing ${this.gameStateUI.players()[this.sessionID].name()}`)
+        let playerPlayed = this.gameStateUI.players().filter((player) => player.id() == this.sessionID)[0];
+        console.log(`I am playing ${playerPlayed.name()}`)
       }
       if(messageParsed.type == "sendID"){
         this.sessionID = messageParsed.data;
         localStorage.setItem("sessionID", `${this.sessionID}`)
+        console.log(this.sessionID);
       }
     }
     catch{
@@ -67,30 +69,32 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
   }
   public askID() {
     if (localStorage.getItem("sessionID") != null){
-       this.sessionID = Number(localStorage.getItem("sessionID"));
+      let testID = localStorage.getItem("sessionID");
+      if (testID != null){
+          this.sessionID = testID;
+      }
+      if(this.sessionID != ""){
+        this.webSocketService.send(JSON.stringify({ type: "ID", data: this.sessionID }));
+      }
+      else{
+        this.webSocketService.send(JSON.stringify({ type: "ID", data: null }));
+      }
     }
-    if(this.sessionID != 999){
-      this.webSocketService.send(JSON.stringify({ type: "ID", data: this.sessionID }));
-    }
-    else{
-      this.webSocketService.send(JSON.stringify({ type: "ID", data: null }));
-    }
-    
   }
 
-  public toLobby(sessionID: number){
+  public toLobby(sessionID: string){
     this.webSocketService.send(JSON.stringify({ type: "toLobby", data: {sessionID} }));
   }
 
-  public ready(sessionID: number){
+  public ready(sessionID: string){
     this.webSocketService.send(JSON.stringify({ type: "ready", data: {sessionID} }));
   }
 
-  public startGame(sessionID: number){
+  public startGame(sessionID: string){
     this.webSocketService.send(JSON.stringify({ type: "startGame", data: {sessionID} }));
   }
 
-  public setName(sessionID: number){
+  public setName(sessionID: string){
     if (this.profileForm.value.name.length < 3){
       console.log("name is too short !")
     }
@@ -101,11 +105,11 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
   }
 
 
-  public onPlay(choice: number, sessionID: number) {
+  public onPlay(choice: number, sessionID: string) {
     this.webSocketService.send(JSON.stringify({ type: "onPlay" , data: {choice,sessionID} }));
   }
 
-  public onKill(choice: number, sessionID: number) {
+  public onKill(choice: number, sessionID: string) {
     this.webSocketService.send(JSON.stringify({ type: "onKill" , data: {choice,sessionID} }));
   }
 

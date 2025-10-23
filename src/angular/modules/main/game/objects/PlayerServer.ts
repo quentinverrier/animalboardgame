@@ -5,7 +5,7 @@ export type PlayerServer = {
     canKill: boolean;
     canPlay: boolean;
     handCards: boolean[];
-    id: number;
+    id: string;
     inactiveCards: boolean[];
     mushrooms: number;
     name: string;

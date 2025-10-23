@@ -2,7 +2,7 @@ import { signal, WritableSignal } from "@angular/core";
 
 export class PlayerUI {
 
-    public id: WritableSignal<number>;
+    public id: WritableSignal<string>;
     public name: WritableSignal<string>;
     public ready: WritableSignal<boolean>;
     public mushrooms: WritableSignal<number>;
@@ -16,7 +16,7 @@ export class PlayerUI {
     public canKill: WritableSignal<boolean>;
 
     public constructor() {
-        this.id = signal(1);
+        this.id = signal("");
         this.name = signal("koukou");
         this.ready = signal(false);
         this.mushrooms = signal(999);
