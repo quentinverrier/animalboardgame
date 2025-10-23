@@ -49,8 +49,10 @@ export class GameStateUI {
             playerUI.mushrooms.set(playerServer.mushrooms);
             playerUI.alive.set(playerServer.alive);
             playerUI.handCards.set(playerServer.handCards);
+            playerUI.handCardsNumber.set(playerServer.handCardsNumber);
             playerUI.inactiveCards.set(playerServer.inactiveCards);
             playerUI.boardCards.set(playerServer.boardCards);
+            playerUI.publicBoardCard.set(playerServer.publicBoardCard);
             playerUI.canPlay.set(playerServer.canPlay);
             playerUI.canKill.set(playerServer.canKill);
         }

@@ -10,4 +10,6 @@ export type PlayerServer = {
     mushrooms: number;
     name: string;
     ready: boolean;
+    publicBoardCard: number;
+    handCardsNumber: number;
 }

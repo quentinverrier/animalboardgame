@@ -8,7 +8,9 @@ export class PlayerUI {
     public mushrooms: WritableSignal<number>;
     public alive: WritableSignal<boolean>;
     public handCards: WritableSignal<boolean[]>;
+    public handCardsNumber: WritableSignal<number>;
     public boardCards: WritableSignal<boolean[]>;
+    public publicBoardCard: WritableSignal<number>;
     public inactiveCards: WritableSignal<boolean[]>;
     public canPlay: WritableSignal<boolean>;
     public canKill: WritableSignal<boolean>;
@@ -20,7 +22,9 @@ export class PlayerUI {
         this.mushrooms = signal(999);
         this.alive = signal(false);
         this.handCards = signal([]);
+        this.handCardsNumber = signal(5);
         this.boardCards = signal([]);
+        this.publicBoardCard = signal(-1);
         this.inactiveCards = signal([]);
         this.canPlay = signal(false);
         this.canKill = signal(false);

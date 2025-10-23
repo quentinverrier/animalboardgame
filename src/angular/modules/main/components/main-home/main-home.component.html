@@ -20,7 +20,7 @@
   @for(playerUI of gameStateUI.players(); track playerUI.id()){
     <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
       Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
-      | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}}
+      | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}} | HandCardsNumber: {{playerUI.handCardsNumber()}} | PublicBoardCard: {{playerUI.publicBoardCard()}}
     </p>
   }
 
