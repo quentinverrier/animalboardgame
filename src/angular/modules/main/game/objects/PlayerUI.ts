@@ -4,6 +4,7 @@ export class PlayerUI {
 
     public id: WritableSignal<number>;
     public name: WritableSignal<string>;
+    public ready: WritableSignal<boolean>;
     public mushrooms: WritableSignal<number>;
     public alive: WritableSignal<boolean>;
     public handCards: WritableSignal<boolean[]>;
@@ -15,6 +16,7 @@ export class PlayerUI {
     public constructor() {
         this.id = signal(1);
         this.name = signal("koukou");
+        this.ready = signal(false);
         this.mushrooms = signal(999);
         this.alive = signal(false);
         this.handCards = signal([]);

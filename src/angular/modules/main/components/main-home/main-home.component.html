@@ -1,35 +1,59 @@
-@for(playerUI of gameStateUI.players(); track playerUI.id()){
-  <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
-    Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
-    | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}}
-  </p>
-
-}
-<p>Players:
-  [@for(player of gameStateUI.players(); track player.id()){
-    {{player.name()}}
-  }]
-   | Threshold: {{gameStateUI.mushroomThreshold()}} | Round: {{gameStateUI.round()}} | Turn: {{gameStateUI.turn()}} | cardValue: {{gameStateUI.cardValue()}} | deadCards: [{{gameStateUI.deadCards()}}]</p>
-
-@for(player of gameStateUI.players(); track player.id()){
-    <p>{{player.name()}}
-      @if(player.id() == sessionID){
-        @if(player.canPlay() == true){
-          @for(i of range(0,4); track $index){
-            @if(player.handCards()[i] == true){
-              <button (click)="onPlay(i, player.id())">Jouer {{i+1}}</button>
-            }
-            
-          }
-        }
-        @if(player.canKill() == true){
-          
-          @for(i of range(0,4); track $index){
-            @if(gameStateUI.getKillableCards().includes(`${i}`)){
-              <button (click)="onKill(i, player.id())">Tuer les {{i+1}}</button>
-            }
-          }
-        }
-      }
-      | Score: {{player.getScore()}} </p>
+@if(gameStateUI.started() == false){ 
+  <p>---Lobby---</p>
+  @for(playerUI of gameStateUI.players(); track playerUI.id()){
+    <p> ID: {{playerUI.id()}} || Name: {{playerUI.name()}} || Ready: {{playerUI.ready()}}</p>
+    @if(playerUI.id() == sessionID){
+      <form [formGroup]="profileForm"
+          (ngSubmit)="setName(sessionID)">
+      <input type="name" formControlName="name" minlength="3" maxlength="15" />
+      <button type="submit">Changer pseudo</button>
+      </form>
+      <button (click)="ready(sessionID)">Prêt</button>
+    }
   }
+  <button (click)="startGame(sessionID)">Lancer la partie</button>
+}
+
+
+@if(gameStateUI.started() == true){
+  <p>---GameState---</p>
+  @for(playerUI of gameStateUI.players(); track playerUI.id()){
+    <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
+      Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
+      | canPlay: {{playerUI.canPlay()}} | canKill: {{playerUI.canKill()}}
+    </p>
+  }
+
+  <p>Players:
+    [@for(player of gameStateUI.players(); track player.id()){
+      {{player.name()}}
+    }]
+    | Threshold: {{gameStateUI.mushroomThreshold()}} | Round: {{gameStateUI.round()}} | Turn: {{gameStateUI.turn()}} | cardValue: {{gameStateUI.cardValue()}} | deadCards: [{{gameStateUI.deadCards()}}]</p>
+
+  <p>---Actions---</p>
+  @for(playerUI of gameStateUI.players(); track playerUI.id()){
+      <p>{{playerUI.name()}}
+        @if(playerUI.id() == sessionID){
+          @if(playerUI.canPlay() == true){
+            @for(i of range(0,4); track $index){
+              @if(playerUI.handCards()[i] == true){
+                <button (click)="onPlay(i, sessionID)">Jouer {{i+1}}</button>
+              }
+              
+            }
+          }
+          @if(playerUI.canKill() == true){
+            
+            @for(i of range(0,4); track $index){
+              @if(gameStateUI.getKillableCards().includes(`${i}`)){
+                <button (click)="onKill(i, sessionID)">Tuer les {{i+1}}</button>
+              }
+            }
+          }
+        }
+        | Score: {{playerUI.getScore()}} </p>
+    }
+    @if (gameStateUI.winner() == true){
+      <button (click)="toLobby(sessionID)">Retour au lobby</button>
+    }
+}

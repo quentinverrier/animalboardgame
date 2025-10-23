@@ -2,6 +2,7 @@ import { PlayerServer } from "./PlayerServer";
 
 export type GameStateServer={
 
+    started: boolean;
     cardValue: number;
     deadCards: boolean[];
     leftToPlay: number;
@@ -9,5 +10,6 @@ export type GameStateServer={
     players: PlayerServer[];
     round: number;
     turn: number;
+    winner: boolean;
 
 }

@@ -9,5 +9,5 @@ export type PlayerServer = {
     inactiveCards: boolean[];
     mushrooms: number;
     name: string;
-
+    ready: boolean;
 }

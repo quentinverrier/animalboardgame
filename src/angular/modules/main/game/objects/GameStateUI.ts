@@ -6,31 +6,37 @@ export class GameStateUI {
 
     // public gameState: WritableSignal<GameState>;
     public players: WritableSignal<PlayerUI[]>;
+    public started: WritableSignal<boolean>;
     public mushroomThreshold: WritableSignal<number>;
     public round: WritableSignal<number>;
     public turn: WritableSignal<number>;
     public cardValue: WritableSignal<number>;
     public leftToPlay: WritableSignal<number>;
     public deadCards: WritableSignal<boolean[]>;
+    public winner: WritableSignal<boolean>;
 
     public constructor() {
         // this.gameState = signal(new GameState(this,[]))
         this.players = signal([]);
+        this.started = signal(false);
         this.mushroomThreshold = signal(5);
         this.round = signal(999);
         this.turn = signal(999);
         this.cardValue = signal(999);
         this.leftToPlay = signal(999);
         this.deadCards = signal([]);
+        this.winner = signal(false);
     }
 
     public update(gameStateServer: GameStateServer){
+        this.started.set(gameStateServer.started);
         this.mushroomThreshold.set(gameStateServer.mushroomThreshold);
         this.turn.set(gameStateServer.turn);
         this.round.set(gameStateServer.round);
         this.cardValue.set(gameStateServer.cardValue);
         this.leftToPlay.set(gameStateServer.leftToPlay);
         this.deadCards.set(gameStateServer.deadCards);
+        this.winner.set(gameStateServer.winner);
         for (const index in gameStateServer.players){
             if(!this.players()[Number(index)]){
                 this.players().push(new PlayerUI());
@@ -39,6 +45,7 @@ export class GameStateUI {
             let playerServer = gameStateServer.players[index];
             playerUI.id.set(playerServer.id);
             playerUI.name.set(playerServer.name);
+            playerUI.ready.set(playerServer.ready);
             playerUI.mushrooms.set(playerServer.mushrooms);
             playerUI.alive.set(playerServer.alive);
             playerUI.handCards.set(playerServer.handCards);
