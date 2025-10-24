@@ -16,7 +16,7 @@
 
 
 @if(gameStateUI.started() == true){
-  <p>---GameState---</p>
+  <!-- <p>---GameState---</p>
   @for(playerUI of gameStateUI.players(); track playerUI.id()){
     <p>Name: {{playerUI.name()}} | Mushrooms: {{playerUI.mushrooms()}} |
       Alive: {{playerUI.alive()}} | HandCards: [{{playerUI.handCards()}}] | BoardCards: [{{playerUI.boardCards()}}] | InactiveCards: [{{playerUI.inactiveCards()}}] 
@@ -52,8 +52,92 @@
           }
         }
         | Score: {{playerUI.getScore()}} </p>
+      }-->
+
+<p>---Player Boxes---</p>
+
+<div class="player-row-horizontal">
+
+@for(playerUI of gameStateUI.players(); track playerUI.id())
+{
+
+
+<div class="player-box">
+  <!-- Carte publique -->
+  <div class="public-card">
+    @if (!playerUI.alive() || playerUI.canPlay()) {
+      <span> </span>
+    } @else if (gameStateUI.cardValue() < playerUI.publicBoardCard() || playerUI.publicBoardCard() == -1) {
+      <div class="card face-down">❓</div>
+    } @else {
+      <div class="card face-up">{{ playerUI.publicBoardCard() + 1 }}</div>
     }
-    @if (gameStateUI.winner() == true){
+  </div>
+
+  <div class="player-row">
+    <!-- Cartes inactives à gauche -->
+    <div class="inactive-cards">
+      <p>Inactive:</p>
+      <div class="card-container">
+        @for (i of range(0, 5); track $index) {
+          @if (playerUI.inactiveCards()[i] === true) {
+            <div class="card inactive">{{ i + 1 }}</div>
+          }
+        }
+      </div>
+      <p class="score">Score: {{ playerUI.getScore() }}</p>
+    </div>
+
+    <!-- Encadré central -->
+    <div class="player-center" [class.dead]="!playerUI.alive()">
+      <p class="player-name">{{ playerUI.name() }}</p>
+      <p class="player-cards">Cartes: {{ playerUI.handCardsNumber() }}</p>
+      <p class="mushrooms">🍄 {{ playerUI.mushrooms() }}</p>
+    </div>
+
+    <!-- Actions à droite -->
+    <div class="actions">
+      <p>Actions:</p>
+
+      <!-- Cartes jouables -->
+      @if (playerUI.id() === sessionID && playerUI.canPlay()) {
+        <div class="card-container horizontal">
+          @for (i of range(0, 5); track $index) {
+            @if (playerUI.handCards()[i] === true) {
+              <div class="card playable" (click)="onPlay(i, playerUI.id())" title="Jouer cette carte">
+                {{ i + 1 }}
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <!-- Cartes tuables -->
+      @if (playerUI.canKill()){
+        @if (playerUI.id() === sessionID) {
+        <div class="card-container horizontal">
+          @for (i of range(0, 5); track $index) {
+            @if (gameStateUI.getKillableCards().includes(`${i}`)) {
+              <div class="card killable" (click)="onKill(i, playerUI.id())" title="Tuer les {{ i + 1 }}">
+                💀 {{ i + 1 }}
+              </div>
+            }
+          }
+        </div>
+        }
+        @else{
+          <div class="red">Killing...</div>
+        }
+      }
+      
+    </div> <!-- fin actions -->
+  </div> <!-- fin player-row -->
+</div> <!-- fin player-box -->
+
+
+}
+</div>
+@if (gameStateUI.winner() == true){
       <button (click)="toLobby(sessionID)">Retour au lobby</button>
-    }
+}
 }

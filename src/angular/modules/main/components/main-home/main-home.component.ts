@@ -71,15 +71,13 @@ export class MainHomeComponent implements OnInit, AfterViewInit {
     if (localStorage.getItem("sessionID") != null){
       let testID = localStorage.getItem("sessionID");
       if (testID != null){
-          this.sessionID = testID;
+        this.sessionID = testID;
       }
-      if(this.sessionID != ""){
         this.webSocketService.send(JSON.stringify({ type: "ID", data: this.sessionID }));
-      }
-      else{
+    }
+    else{
         this.webSocketService.send(JSON.stringify({ type: "ID", data: null }));
       }
-    }
   }
 
   public toLobby(sessionID: string){

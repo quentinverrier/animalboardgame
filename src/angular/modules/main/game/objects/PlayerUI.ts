@@ -32,7 +32,8 @@ export class PlayerUI {
 
     public getScore() {
         let score = 0;
-        for (const index in this.inactiveCards) {
+        for (const index in this.inactiveCards()) {
+            console.log("yes")
             if (this.inactiveCards()[Number(index)] == true) {
                 score += Number(index) + 1;
             }

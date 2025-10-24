@@ -1,0 +1,162 @@
+.player-row-horizontal {
+  display: flex;
+  justify-content: center; /* centre la ligne */
+  align-items: flex-start; /* aligne les boxes sur le haut */
+  gap: 1rem; /* espace entre les boxes */
+  flex-wrap: wrap; /* passe à la ligne si l’écran est trop petit */
+}
+
+.player-box {
+  width: 220px;       /* largeur légèrement réduite */
+  height: 300px;      /* hauteur réduite */
+  border: 2px solid #444;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3rem;
+  box-sizing: border-box;
+}
+
+.public-card {
+  margin-bottom: 0.25rem;
+  display: flex;
+  justify-content: center;
+  min-height: 36px;
+}
+
+.public-placeholder {
+  display: block;
+  width: 24px;
+  height: 34px;
+}
+
+.player-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+/* Colonnes */
+.inactive-cards, .actions {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.7rem;
+}
+
+.player-center {
+  border: 2px solid black;
+  border-radius: 6px;
+  padding: 0.3rem;
+  width: 45%; /* réduit pour harmoniser */
+  text-align: center;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.player-center.dead {
+  border-color: red;
+  background-color: #ffdddd;
+}
+
+.player-name {
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+.player-cards,
+.mushrooms {
+  font-size: 0.7rem;
+  margin: 1px 0;
+}
+
+.score {
+  font-size: 0.8rem; /* légèrement plus grand pour visibilité */
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* Cartes */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.card-container.horizontal {
+  flex-direction: row;
+}
+
+.card {
+  width: 24px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1px;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+.card.inactive {
+  background-color: #dcdcdc;
+  color: #666;
+  border-color: #999;
+}
+
+.card.playable {
+  background-color: #b2f5b2;
+  border-color: #2f9e44;
+  cursor: pointer;
+}
+
+.card.playable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.card.playable-placeholder,
+.card.killable-placeholder {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  width: 24px;
+  height: 34px;
+  margin: 1px;
+}
+
+.card.killable {
+  background-color: #ffb3b3;
+  border-color: #cc0000;
+  cursor: pointer;
+}
+
+.card.killable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(255,0,0,0.3);
+}
+
+.card.face-down {
+  background-color: #888;
+  color: white;
+  border-color: #555;
+}
+
+.card.face-up {
+  background-color: #ffffcc;
+  border-color: #444;
+}
+
+.red{
+    font-weight: bold;
+    color: #cc0000;
+}
